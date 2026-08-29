@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <!-- ئەم دوو سکریپتە لە بەشی head دابنە -->
+     ‏<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فێربوونی زمانی کۆری - K-Kurd</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>فێربوونی زمانی کۆری بە کوردی</h1>
+        <nav>
+            <button onclick="showSection('alphabet')">پیتەکان</button>
+            <button onclick="showSection('words')">وشە و ڕستە ڕۆژانەکان</button>
+            <button onclick="showSection('stories')">چیرۆک و وێنەکان</button>
+        </nav>
+        
+        <!-- بەشی ئادمین و پۆستکردن -->
+        <div id="admin-controls" style="margin-top: 15px;">
+            <button id="open-modal-btn" onclick="toggleModal(true)" style="display:none; background: #333; color: white; font-size: 20px; padding: 5px 15px; border-radius: 50%; border:none; cursor:pointer;">＋</button>
+            <button onclick="logoutAdmin()" id="logout-btn" style="display:none; background: #d9534f; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">چوونەدەرەوە</button>
+            <button onclick="loginAdmin()" id="login-btn" style="background: #0275d8; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">چوونەژوورەوەی ئادمین</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- بەشی پیتەکان -->
+        <section id="alphabet" class="content-section">
+            <h2>پیتەکانی زمانی کۆری</h2>
+            <div id="alphabet-container" class="card-grid"></div>
+        </section>
+
+        <!-- بەشی وشە و ڕستەکان (نزیکەی ٢٠٠ دانە) -->
+        <section id="words" class="content-section" style="display:none;">
+            <h2>فەرهەنگی وشە و ڕستە ڕۆژانەکان</h2>
+            <div id="words-container" class="card-grid"></div>
+        </section>
+
+        <!-- بەشی چیرۆک و وێنەکان -->
+        <section id="stories" class="content-section" style="display:none;">
+            <h2>چیرۆک و وێنەکان</h2>
+            <div id="stories-container" class="card-grid"></div>
+        </section>
+    </main>
+
+    <!-- پەنجەرەی زیادکردنی پۆست -->
+    <div id="post-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>پۆستکردنی چیرۆک یان وێنەی نوێ</h3>
+            <input type="text" id="post-korean" placeholder="دەق بە کۆری">
+            <input type="text" id="post-reading" placeholder="خوێندنەوە بە کوردی">
+            <textarea id="post-meaning" placeholder="چیرۆک یان واتا بە کوردی"></textarea>
+            <input type="text" id="post-image" placeholder="لینکی وێنە (بۆ نموونە وێنەی قەڵەم)">
+            <button onclick="addNewPost()" style="background: #4CAF50; color: white;">بڵاوکردنەوە</button>
+            <button onclick="toggleModal(false)" style="background: #888; color: white;">پەشیمانبوونەوە</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+

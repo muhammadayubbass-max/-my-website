@@ -1,0 +1,69 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f6;
+    margin: 0;
+    padding: 20px;
+    direction: rtl;
+}
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+nav button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+}
+nav button:hover {
+    background-color: #45a049;
+}
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+}
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-align: center;
+}
+.korean { font-size: 24px; color: #d9534f; font-weight: bold; margin-bottom: 10px; }
+.reading { font-size: 18px; color: #0275d8; margin-bottom: 5px; }
+.meaning { font-size: 18px; color: #333; }
+
+.modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.modal-content input, .modal-content textarea {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+}
+.modal-content button {
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
