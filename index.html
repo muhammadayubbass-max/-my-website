@@ -1,67 +1,431 @@
 <!DOCTYPE html>
 <html lang="ku" dir="rtl">
 <head>
-    <!-- ئەم دوو سکریپتە لە بەشی head دابنە -->
-     ‏<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فێربوونی زمانی کۆری - K-Kurd</title>
+
+    <title>LinguaGlass — English & Korean</title>
+
+    <meta
+        name="description"
+        content="LinguaGlass English and Korean language learning app with Kurdish meanings, quizzes, writing practice and progress tracking."
+    >
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    <header>
-        <h1>فێربوونی زمانی کۆری بە کوردی</h1>
-        <nav>
-            <button onclick="showSection('alphabet')">پیتەکان</button>
-            <button onclick="showSection('words')">وشە و ڕستە ڕۆژانەکان</button>
-            <button onclick="showSection('stories')">چیرۆک و وێنەکان</button>
-        </nav>
-        
-        <!-- بەشی ئادمین و پۆستکردن -->
-        <div id="admin-controls" style="margin-top: 15px;">
-            <button id="open-modal-btn" onclick="toggleModal(true)" style="display:none; background: #333; color: white; font-size: 20px; padding: 5px 15px; border-radius: 50%; border:none; cursor:pointer;">＋</button>
-            <button onclick="logoutAdmin()" id="logout-btn" style="display:none; background: #d9534f; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">چوونەدەرەوە</button>
-            <button onclick="loginAdmin()" id="login-btn" style="background: #0275d8; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">چوونەژوورەوەی ئادمین</button>
+<!-- =========================
+     AUTH SCREEN
+========================= -->
+<div id="authScreen" class="auth-screen">
+
+    <div class="auth-background-orb orb-one"></div>
+    <div class="auth-background-orb orb-two"></div>
+
+    <div class="auth-card">
+
+        <div class="auth-brand">
+            <div class="brand-icon">
+                <i class="fa-solid fa-language"></i>
+            </div>
+
+            <div>
+                <h1>LinguaGlass</h1>
+                <p>English & Korean</p>
+            </div>
         </div>
-    </header>
 
-    <main>
-        <!-- بەشی پیتەکان -->
-        <section id="alphabet" class="content-section">
-            <h2>پیتەکانی زمانی کۆری</h2>
-            <div id="alphabet-container" class="card-grid"></div>
-        </section>
-
-        <!-- بەشی وشە و ڕستەکان (نزیکەی ٢٠٠ دانە) -->
-        <section id="words" class="content-section" style="display:none;">
-            <h2>فەرهەنگی وشە و ڕستە ڕۆژانەکان</h2>
-            <div id="words-container" class="card-grid"></div>
-        </section>
-
-        <!-- بەشی چیرۆک و وێنەکان -->
-        <section id="stories" class="content-section" style="display:none;">
-            <h2>چیرۆک و وێنەکان</h2>
-            <div id="stories-container" class="card-grid"></div>
-        </section>
-    </main>
-
-    <!-- پەنجەرەی زیادکردنی پۆست -->
-    <div id="post-modal" class="modal" style="display:none;">
-        <div class="modal-content">
-            <h3>پۆستکردنی چیرۆک یان وێنەی نوێ</h3>
-            <input type="text" id="post-korean" placeholder="دەق بە کۆری">
-            <input type="text" id="post-reading" placeholder="خوێندنەوە بە کوردی">
-            <textarea id="post-meaning" placeholder="چیرۆک یان واتا بە کوردی"></textarea>
-            <input type="text" id="post-image" placeholder="لینکی وێنە (بۆ نموونە وێنەی قەڵەم)">
-            <button onclick="addNewPost()" style="background: #4CAF50; color: white;">بڵاوکردنەوە</button>
-            <button onclick="toggleModal(false)" style="background: #888; color: white;">پەشیمانبوونەوە</button>
+        <div class="auth-welcome">
+            <h2 id="authTitle">بەخێربێیت 👋</h2>
+            <p id="authSubtitle">
+                بچۆ ژوورەوە بۆ دەستگەیشتن بە وانەکانت
+            </p>
         </div>
+
+        <!-- LOGIN -->
+        <form id="loginForm" class="auth-form">
+
+            <div class="input-group">
+                <label for="loginEmail">
+                    <i class="fa-solid fa-envelope"></i>
+                    ئیمەیڵ
+                </label>
+
+                <input
+                    id="loginEmail"
+                    type="email"
+                    placeholder="example@email.com"
+                    autocomplete="email"
+                    required
+                >
+            </div>
+
+            <div class="input-group">
+                <label for="loginPassword">
+                    <i class="fa-solid fa-lock"></i>
+                    وشەی نهێنی
+                </label>
+
+                <div class="password-wrapper">
+                    <input
+                        id="loginPassword"
+                        type="password"
+                        placeholder="********"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        data-target="loginPassword"
+                        aria-label="Show password"
+                    >
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="auth-main-btn">
+                <span>چوونەژوورەوە</span>
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+
+        </form>
+
+        <!-- SIGN UP -->
+        <form id="signupForm" class="auth-form hidden">
+
+            <div class="input-group">
+                <label for="signupName">
+                    <i class="fa-solid fa-user"></i>
+                    ناو
+                </label>
+
+                <input
+                    id="signupName"
+                    type="text"
+                    placeholder="ناوی تۆ"
+                    autocomplete="name"
+                    required
+                >
+            </div>
+
+            <div class="input-group">
+                <label for="signupEmail">
+                    <i class="fa-solid fa-envelope"></i>
+                    ئیمەیڵ
+                </label>
+
+                <input
+                    id="signupEmail"
+                    type="email"
+                    placeholder="example@email.com"
+                    autocomplete="email"
+                    required
+                >
+            </div>
+
+            <div class="input-group">
+                <label for="signupPassword">
+                    <i class="fa-solid fa-lock"></i>
+                    وشەی نهێنی
+                </label>
+
+                <div class="password-wrapper">
+                    <input
+                        id="signupPassword"
+                        type="password"
+                        placeholder="لانیکەم 6 پیت"
+                        minlength="6"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        data-target="signupPassword"
+                        aria-label="Show password"
+                    >
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="signupPasswordConfirm">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    دووبارە وشەی نهێنی
+                </label>
+
+                <div class="password-wrapper">
+                    <input
+                        id="signupPasswordConfirm"
+                        type="password"
+                        placeholder="وشەی نهێنی دووبارە"
+                        minlength="6"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        data-target="signupPasswordConfirm"
+                        aria-label="Show password"
+                    >
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="auth-main-btn">
+                <span>دروستکردنی هەژمار</span>
+                <i class="fa-solid fa-user-plus"></i>
+            </button>
+
+        </form>
+
+        <div id="authMessage" class="auth-message"></div>
+
+        <div class="auth-switch">
+            <span id="authSwitchText">هەژمارت نییە؟</span>
+
+            <button id="authSwitchBtn" type="button">
+                هەژمار دروست بکە
+            </button>
+        </div>
+
+        <div class="auth-security">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>پاراستنی Login بە Supabase Auth</span>
+        </div>
+
     </div>
+</div>
 
-    <script src="app.js"></script>
+
+<!-- =========================
+     MAIN APP
+========================= -->
+<div id="app" class="app hidden">
+
+    <!-- Mobile Overlay -->
+    <div id="mobileOverlay" class="mobile-overlay"></div>
+
+    <!-- =========================
+         SIDEBAR
+    ========================= -->
+    <aside id="sidebar" class="sidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="brand-icon">
+                <i class="fa-solid fa-language"></i>
+            </div>
+
+            <div>
+                <h2>LinguaGlass</h2>
+                <span>English & Korean</span>
+            </div>
+
+        </div>
+
+        <div class="user-mini-card">
+
+            <div class="user-avatar" id="sidebarAvatar">
+                <i class="fa-solid fa-user"></i>
+            </div>
+
+            <div class="user-mini-info">
+                <strong id="sidebarUserName">User</strong>
+                <small id="sidebarUserEmail">email</small>
+            </div>
+
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <li class="nav-item" data-section="social">
+    <i class="fa-solid fa-share-nodes"></i>
+    <span>سۆشیال میدیا</span>
+</li>
+
+            <button class="nav-item active" data-section="dashboard">
+                <i class="fa-solid fa-house"></i>
+                <span>سەرەکی</span>
+            </button>
+
+            <button class="nav-item" data-section="vocabulary">
+                <i class="fa-solid fa-book-open"></i>
+                <span>وشەکان</span>
+            </button>
+
+            <button class="nav-item" data-section="quiz">
+                <i class="fa-solid fa-circle-question"></i>
+                <span>Quiz</span>
+            </button>
+
+            <button class="nav-item" data-section="writing">
+                <i class="fa-solid fa-pen"></i>
+                <span>نووسین</span>
+            </button>
+
+            <button class="nav-item" data-section="favorites">
+                <i class="fa-solid fa-heart"></i>
+                <span>دڵخوازەکان</span>
+            </button>
+
+            <button class="nav-item" data-section="progress">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>پێشکەوتن</span>
+            </button>
+
+            <button class="nav-item" data-section="achievements">
+                <i class="fa-solid fa-trophy"></i>
+                <span>دەستکەوتەکان</span>
+            </button>
+
+            <button class="nav-item" data-section="settings">
+                <i class="fa-solid fa-gear"></i>
+                <span>ڕێکخستنەکان</span>
+            </button>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-xp">
+                <div class="xp-row">
+                    <span>XP</span>
+                    <strong id="sidebarXP">0</strong>
+                </div>
+
+                <div class="xp-bar">
+                    <span id="sidebarXPBar"></span>
+                </div>
+            </div>
+
+            <button id="logoutBtn" class="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>دەرچوون</span>
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN
+    ========================= -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <button id="mobileMenuBtn" class="icon-btn mobile-menu-btn">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <div>
+                    <h1 id="pageTitle">سەرەکی</h1>
+                    <p id="pageSubtitle">
+                        بەخێربێیت بۆ LinguaGlass
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="topbar-actions">
+
+                <div class="streak-badge">
+                    <i class="fa-solid fa-fire"></i>
+                    <span id="globalStreak">0</span>
+                    <small>ڕۆژ</small>
+                </div>
+
+                <div class="xp-badge">
+                    <i class="fa-solid fa-star"></i>
+                    <span id="globalXP">0</span>
+                    <small>XP</small>
+                </div>
+
+                <button id="themeBtn" class="icon-btn" title="Theme">
+                    <i class="fa-solid fa-sun"></i>
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- LANGUAGE BAR -->
+        <section class="language-toolbar glass-card">
+
+            <div class="language-title">
+                <i class="fa-solid fa-earth-americas"></i>
+                <span>زمان فێربوون</span>
+            </div>
+
+            <div class="language-buttons">
+
+                <button
+                    class="language-btn active"
+                    data-language="english"
+                >
+                    🇬🇧 English
+                </button>
+
+                <button
+                    class="language-btn"
+                    data-language="korean"
+                >
+                    🇰🇷 한국어
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- CONTENT -->
+        <section id="appContent" class="content-area"></section>
+
+    </main>
+</div>
+
+
+<!-- TOAST -->
+<div id="toast" class="toast">
+    <i id="toastIcon" class="fa-solid fa-circle-check"></i>
+    <span id="toastText"></span>
+</div>
+
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- APP -->
+<script src="script.js"></script>
+
 </body>
 </html>
-
